@@ -2,6 +2,8 @@
 
 This repository contains the code used for the paper "**When can you trust your explanations? A robustness analysis on feature importances**" (*Vascotto, Rodriguez, Bonaita, Bortolussi*), submitted at the 3rd World Conference on eXplainable Artificial Intelligence.
 
+### Folders and File Description
+
 The script ```neighbourhood_attr.py``` generates the neighbourhoods and the IG, DL and LRP attributions. These are then aggregated via ```aggregation.py``` and the robustness score is computed.
 ```tuning.ipynb``` should be used to tune the $k$nn regressor and the choice of the threshold $r_{th}$. Chosen values presented in Appendix A are saved in ```parameters.joblib```.
 

@@ -5,7 +5,7 @@ This repository contains the code used for the paper "**When can you trust your 
 ### Folders and File Description
 
 The script ```neighbourhood_attr.py``` generates the neighbourhoods and the IG, DL and LRP attributions. These are then aggregated via ```aggregation.py``` and the robustness score is computed.
-```tuning.ipynb``` should be used to tune the $k$nn regressor and the choice of the threshold $r_{th}$. Chosen values presented in Appendix A are saved in ```parameters.joblib```.
+```tuning.ipynb``` should be used to tune the $k$-nn regressor and the choice of the threshold $r_{th}$. Chosen values presented in Appendix A are saved in ```parameters.joblib```.
 
 The script ```new_net_training.py``` should be used when a new dataset (either already preprocessed or not) is added for testing and to train the three required nets. All datasets included in the paper are already saved in the ```dataset``` folder and the corresponding model weights are stored in ```models```.
 The folders ```results_medoid``` and ```results_random``` contains the robustness scores, ensemble and individual attributions for each dataset-model pair, for both validation and test sets. 

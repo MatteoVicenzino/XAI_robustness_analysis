@@ -15,3 +15,5 @@ Example:
 > python neighbourhood_attr.py --dataset adult --model_name model1 --type test --random False --alpha 0.05 --alpha_cat 0.05 --k 5 --num 100
 
 > python aggregation.py --dataset adult --model_name model1 --type test --agg ensemble --neigh medoid
+
+Note that only the results used for the paper images are shared in this repository, due to size-limit requirements. Results should be computed using the hyperparameters and neighbouhood specification details presented in the Appendix.

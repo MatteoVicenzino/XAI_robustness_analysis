@@ -76,7 +76,7 @@ if args.new: #If the dataset is new and has not been preprocessed yet
     except:
         df = pd.read_excel(file_path)
 
-    p =  preprocess.PP(df)
+    p = preprocess.PP(df)
     p.preprocess(preprocess_variables, validation = args.validation)
 
     feature_names, categorical_features, categorical_names, ordinal, discrete, encoder, num_features = p.df_info()

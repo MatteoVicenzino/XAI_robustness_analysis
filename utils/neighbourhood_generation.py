@@ -14,7 +14,7 @@ def keep_neighbourhood(neighbourhood, target, model, encoder):
         try:
             nbh_tensor = torch.Tensor(encoder.transform(neighbourhood).toarray())
         except:
-            nbh_tensor = torch.Tensor(encoder.trasform(neighbourhood))
+            nbh_tensor = torch.Tensor(encoder.transform(neighbourhood))
     else:
         nbh_tensor = torch.Tensor(neighbourhood)
 

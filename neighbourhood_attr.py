@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser(description="pipeline")
 parser.add_argument("--dataset", type=str, default="")
 parser.add_argument("--model_name", type=str, default="")
 parser.add_argument("--type", type=str, default="validation")
-parser.add_argument("--random", type= bool, default=False)
+parser.add_argument("--random", action="store_true")
 parser.add_argument("--alpha", type=float, default=0.05) # if random=True this is sigma
 parser.add_argument("--alpha_cat", type=float, default=0.05) #if random=True this is gamma_cat
 parser.add_argument("--k", type=int, default = 5)

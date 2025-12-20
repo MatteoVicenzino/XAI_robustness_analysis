@@ -12,7 +12,7 @@ The folders ```results_medoid``` and ```results_random``` contain the robustness
 The folder  ```results_roc_auc``` contains the data needed for ROC/AUC analysis, divided by aggregation method and neighbourhood generation. 
 
 Example:
-> python neighbourhood_attr.py --dataset adult --model_name model1 --type test --random False --alpha 0.05 --alpha_cat 0.05 --k 5 --num 100
+> python neighbourhood_attr.py --dataset adult --model_name model1 --type test --random --alpha 0.05 --alpha_cat 0.05 --k 5 --num 100
 
 > python aggregation.py --dataset adult --model_name model1 --type test --agg ensemble --neigh medoid
 

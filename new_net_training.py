@@ -23,6 +23,7 @@ parser.add_argument("--model_type", type=str, default="")
 parser.add_argument("--model_name", type=str, default="")
 parser.add_argument("--new", type=eval, default=False)
 parser.add_argument("--validation", type=eval, default=True)
+parser.add_argument("--history", type=eval, default=False)
 args = parser.parse_args()
 args.seed = np.random.randint(1)
 print(args)
@@ -113,7 +114,12 @@ model_name = args.model_name
 
 params = net.training_param(model)
 
-model = training.train_net(model, model_name, X_train, y_train, params, args.dataset, folder_models)
+if args.history:
+    history_path = os.path.join(folder_models, "histories", f"{args.dataset}_{model_name}_history.joblib")
+else:
+    history_path = None
+    
+model = training.train_net(model, model_name, X_train, y_train, params, args.dataset, folder_models, X_val, y_val, history_path)
 training.evaluation(model, X_train, X_val, y_train, y_val, type = 'classification')
 
 if args.new:

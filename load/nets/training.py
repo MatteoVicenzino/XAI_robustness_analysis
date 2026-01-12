@@ -71,21 +71,33 @@ def train_epoch(model, dataloader, loss_fn, optimizer, device, loss_meter, accur
 
         optimizer.step()
 
-def train(model, dataloader, loss_fn, optimizer, num_epochs, device):
+def train(model, dataloader, loss_fn, optimizer, num_epochs, device, X_val, y_val, history_path):
     model.train()
     model.to(device)
     loss_meter = AverageMeter()
     
+    history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
+
     for epoch in range(num_epochs):
         loss_meter.reset()
         accuracy_meter = AverageMeter()
 
         train_epoch(model, dataloader, loss_fn, optimizer, device, loss_meter, accuracy_meter)
 
+        history['train_loss'].append(loss_meter.avg)
+        history['train_acc'].append(accuracy_meter.avg)
+        val_loss, val_acc = validate_epoch(model, X_val, y_val, loss_fn, device)
+        history['val_loss'].append(val_loss)
+        history['val_acc'].append(val_acc)
+
         if epoch % 10 == 0:
             print(f"Epoch {epoch}/{num_epochs}. Training loss {loss_meter.avg} Accuracy: {accuracy_meter.avg}")
+        
+    if history_path != None:
+        joblib.dump(history, history_path)
 
-def train_net(model, model_name, X_train, y_train, training_param, dataset_name, path_models):
+
+def train_net(model, model_name, X_train, y_train, training_param, dataset_name, path_models, X_val, y_val, history_path):
     batch_size, num_epochs, learning_rate, optimizer, loss_fn = training_param
     
     dataset = TensorDataset(X_train, y_train)
@@ -93,7 +105,8 @@ def train_net(model, model_name, X_train, y_train, training_param, dataset_name,
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
-    train(model, train_iter, loss_fn, optimizer, num_epochs, device)
+    path_to_save = os.path.join(path_models, f"{dataset_name}_{model_name}_history.joblib")
+    train(model, train_iter, loss_fn, optimizer, num_epochs, device, X_val, y_val, history_path)
 
     save_path = os.path.join(path_models, f"{dataset_name}_{model_name}.pt")
     torch.save(model.state_dict(), save_path)
@@ -101,6 +114,21 @@ def train_net(model, model_name, X_train, y_train, training_param, dataset_name,
     update_model_dict(model, model_name, dataset_name)
     print("Model saved")
     return model
+
+
+def validate_epoch(model, X_val, y_val,  loss_fn, device):
+    model.eval()
+    
+    with torch.no_grad():
+        X_val = X_val.to(device)
+        y_val = y_val.to(device)
+        
+        y_hat = model(X_val)
+        val_loss = loss_fn(y_hat, y_val).item()
+        val_acc = accuracy(y_hat, y_val)
+        
+    model.train()
+    return val_loss, val_acc
 
 
 def evaluation(model, X_train, X_test, y_train, y_test, type = 'confusion'):

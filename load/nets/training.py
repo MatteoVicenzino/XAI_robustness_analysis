@@ -131,24 +131,32 @@ def validate_epoch(model, X_val, y_val,  loss_fn, device):
     return val_loss, val_acc
 
 
-def evaluation(model, X_train, X_test, y_train, y_test, type = 'confusion'):
+def evaluation(model, X_train, X_test, y_train, y_test, results_path = None, type = 'confusion'):
     model.eval()
 
+    results = {'pred_proba': [], 'classification_report': []}
+    
     class_train_hat = np.argmax(model(X_train).detach().numpy(), axis=1)
     class_train_true = np.argmax(y_train.detach().numpy(), axis=1)
 
     class_test_hat = np.argmax(model(X_test).detach().numpy(), axis=1)
     class_test_true = np.argmax(y_test.detach().numpy(), axis=1)
+    
+    test_prob = torch.softmax(model(X_test), dim=1).detach().numpy()
+    
+    results['classification_report'].append(classification_report(class_test_true, class_test_hat))
+    results['pred_proba'].append(test_prob)
+    
+    if results_path != None:
+        joblib.dump(results, results_path)
 
     if type == 'confusion':
-        print(f"Train\nAccuracy: {accuracy_score(class_train_hat, class_train_true)}\nConfusion matrix: {confusion_matrix(class_train_hat, class_train_true)}")
+        print(f"Train\nAccuracy: {accuracy_score(class_train_true, class_train_hat)}\nConfusion matrix: {confusion_matrix(class_train_true, class_train_hat)}")
 
-        print(f"Test\nAccuracy: {accuracy_score(class_test_hat, class_test_true)}\nConfusion matrix: {confusion_matrix(class_test_hat, class_test_true)}")
+        print(f"Test\nAccuracy: {accuracy_score(class_test_true, class_test_hat)}\nConfusion matrix: {confusion_matrix(class_test_true, class_test_hat)}")
 
     elif type == 'classification':
-        print(f"Train\nAccuracy: {accuracy_score(class_train_hat, class_train_true)}\nClassification report: {classification_report(class_train_hat, class_train_true)}")
+        print(f"Train\nAccuracy: {accuracy_score(class_train_true, class_train_hat)}\nClassification report:\n {classification_report(class_train_true, class_train_hat)}")
 
-        print(f"Test\nAccuracy: {accuracy_score(class_test_hat, class_test_true)}\nClassification report: {classification_report(class_test_hat, class_test_true)}")
+        print(f"Test\nAccuracy: {accuracy_score(class_test_true, class_test_hat)}\nClassification report:\n {classification_report(class_test_true, class_test_hat)}")
 
-
-        

@@ -105,7 +105,6 @@ def train_net(model, model_name, X_train, y_train, training_param, dataset_name,
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
-    path_to_save = os.path.join(path_models, f"{dataset_name}_{model_name}_history.joblib")
     train(model, train_iter, loss_fn, optimizer, num_epochs, device, X_val, y_val, history_path)
 
     save_path = os.path.join(path_models, f"{dataset_name}_{model_name}.pt")
@@ -134,7 +133,7 @@ def validate_epoch(model, X_val, y_val,  loss_fn, device):
 def evaluation(model, X_train, X_test, y_train, y_test, results_path = None, type = 'confusion'):
     model.eval()
 
-    results = {'pred_proba': [], 'classification_report': []}
+    results = {'pred_proba': [], 'classification_report': [], 'confusion_matrix': []}
     
     class_train_hat = np.argmax(model(X_train).detach().numpy(), axis=1)
     class_train_true = np.argmax(y_train.detach().numpy(), axis=1)
@@ -144,8 +143,9 @@ def evaluation(model, X_train, X_test, y_train, y_test, results_path = None, typ
     
     test_prob = torch.softmax(model(X_test), dim=1).detach().numpy()
     
-    results['classification_report'].append(classification_report(class_test_true, class_test_hat))
     results['pred_proba'].append(test_prob)
+    results['classification_report'].append(classification_report(class_test_true, class_test_hat))
+    results['confusion_matrix'].append(confusion_matrix(class_test_true, class_test_hat))
     
     if results_path != None:
         joblib.dump(results, results_path)

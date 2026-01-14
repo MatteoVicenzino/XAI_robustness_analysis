@@ -126,7 +126,7 @@ class shallowNN(nn.Module):
         out=self.linear3(out)
         return self.softmax(out)
     
-#################################################
+###############################################################################################################
 
 
 class regularizedNN(nn.Module):

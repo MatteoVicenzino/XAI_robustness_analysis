@@ -33,8 +33,6 @@ def recover_net(net_name):
         return regularizedNN()
     elif net_name=="residualNN":
         return residualNN()
-    elif net_name=="bottleneckNN":
-        return bottleneckNN()
     else:
         raise ValueError(f"There is no object of class {net_name}.")
 
@@ -123,7 +121,7 @@ class shallowNN(nn.Module):
 
 class regularizedNN(nn.Module):
     def __init__(self):
-        dropout_rate = 0.3
+        dropout_rate = 0.1
         num_features, size1, size2, size3, size4 = _in_, 128, 64, 32, _out_
         
         super().__init__()
@@ -169,40 +167,3 @@ class residualNN(nn.Module):
     def forward(self, X):
         pass
     
-    
-###############################################################################################################
-
-class bottleneckNN(nn.Module):
-    def __init__(self):
-        num_features, size1, size2, size3, size4 = _in_, 64, 32, 16, _out_
-        super().__init__()
-        self.linear1 = nn.Linear(num_features, size1)
-        self.relu1 = nn.ReLU()
-        self.linear2 = nn.Linear(size1, size2)
-        self.relu2 = nn.ReLU()
-        self.linear3 = nn.Linear(size2, size3)
-        self.relu3 = nn.ReLU()
-        self.linear4 = nn.Linear(size3, size4)
-        self.relu4 = nn.ReLU()
-        
-        self.linear7 = nn.Linear(size4, size3)
-        self.relu7 = nn.ReLU()
-        self.linear8 = nn.Linear(size3, size2)
-        self.relu8 = nn.ReLU()
-        self.linear9 = nn.Linear(size2, size1)
-        self.relu9 = nn.ReLU()
-        self.linear10 = nn.Linear(size1, _out_)
-        self.softmax = nn.Softmax()
-        
-    def forward(self, X):
-        out = self.relu1(self.linear1(X))
-        out = self.relu2(self.linear2(out))
-        out = self.relu3(self.linear3(out))
-        out = self.relu4(self.linear4(out))
-
-        out = self.relu7(self.linear7(out))
-        out = self.relu8(self.linear8(out))
-        out = self.relu9(self.linear9(out))
-        out = self.linear10(out)
-        return self.softmax(out)
-        

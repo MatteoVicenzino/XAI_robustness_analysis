@@ -35,8 +35,6 @@ def recover_net(net_name):
         return regularizedNN()
     elif net_name=="residualNN":
         return residualNN()
-    elif net_name=="reg2NN":
-        return reg2NN()
     else:
         raise ValueError(f"There is no object of class {net_name}.")
 
@@ -128,7 +126,7 @@ class shallowNN(nn.Module):
 
 class regularizedNN(nn.Module):
     def __init__(self):
-        dropout_rate = 0.3
+        dropout_rate = 0.1
         num_features, size1, size2, size3, size4, size5 = _in_, 128, 64, 32, 16,  _out_
         
         super().__init__()
@@ -183,49 +181,3 @@ class residualNN(nn.Module):
         pass
     
     
-###############################################################################################################
-
-class reg2NN(nn.Module):
-    def __init__(self):
-        dropout_rate = 0.5
-        num_features, size1, size2, size3, size4, size5 = _in_, 128, 64, 32, 16,  _out_
-        
-        super().__init__()
-        self.linear1=nn.Linear(in_features=num_features, out_features=size1)
-        self.bn1=nn.BatchNorm1d(size1)
-        self.sigmoid1=nn.ReLU()
-        self.dropout1=nn.Dropout(dropout_rate)
-        self.linear2=nn.Linear(in_features=size1, out_features=size2)
-        self.bn2=nn.BatchNorm1d(size2)
-        self.sigmoid2=nn.ReLU()
-        self.dropout2=nn.Dropout(dropout_rate)
-        self.linear3=nn.Linear(in_features=size2, out_features=size3)
-        self.bn3=nn.BatchNorm1d(size3)
-        self.sigmoid3 =nn.ReLU()
-        self.dropout3=nn.Dropout(dropout_rate)
-        self.linear4=nn.Linear(in_features=size3, out_features=size4)
-        self.bn4=nn.BatchNorm1d(size4)
-        self.sigmoid4 =nn.ReLU()
-        self.dropout4=nn.Dropout(dropout_rate)
-        self.linear5=nn.Linear(in_features=size4, out_features=size5)
-        self.softmax = nn.Softmax()
-        
-    def forward(self, X):
-        out=self.linear1(X)
-        out=self.bn1(out)
-        out=self.sigmoid1(out)
-        out=self.dropout1(out)
-        out=self.linear2(out)
-        out=self.bn2(out)
-        out=self.sigmoid2(out)
-        out=self.dropout2(out)
-        out=self.linear3(out)
-        out=self.bn3(out)
-        out=self.sigmoid3(out)
-        out=self.dropout3(out)
-        out=self.linear4(out)
-        out=self.bn4(out)
-        out=self.sigmoid4(out)
-        out=self.dropout4(out)
-        out=self.linear5(out)
-        return self.softmax(out)

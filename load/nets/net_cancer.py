@@ -35,6 +35,12 @@ def recover_net(net_name):
         return regularizedNN()
     elif net_name=="residualNN":
         return residualNN()
+    elif net_name=="CNN1":
+        return CNN1()
+    elif net_name=="CNN2":
+        return CNN2()
+    elif net_name=="CNN3":
+        return CNN3()
     else:
         raise ValueError(f"There is no object of class {net_name}.")
 
@@ -165,3 +171,82 @@ class residualNN(nn.Module):
     def forward(self, X):
         pass
     
+
+###############################################################################################################
+
+class CNN1(nn.Module):
+    def __init__(self):
+        num_features, size1, size2, size3, size4 = _in_, 16, 16, 16, _out_
+
+        super().__init__()
+        
+        self.conv1 = nn.Conv1d(1, size1, kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm1d(size1)
+        
+        self.conv2 = nn.Conv1d(size1, size2, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm1d(size2)
+        
+        self.pool = nn.MaxPool1d(kernel_size=2)
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten(1)
+        self.softmax = nn.Softmax()
+        
+        final_lenght = num_features // 4 # 2 pooling and conv kernel_size=3
+        
+        self.fc1 = nn.Linear(size2 * final_lenght, size3)
+        self.fc2 = nn.Linear(size3, size4)
+        
+    def forward(self, X):
+        
+        X = X.unsqueeze(1)
+        X = self.pool(self.relu(self.bn1(self.conv1(X))))
+        X = self.pool(self.relu(self.bn2(self.conv2(X))))
+        
+        X = self.flatten(X)
+        X = self.relu(self.fc1(X))
+        X = self.fc2(X)
+        return self.softmax(X)
+    
+###############################################################################################################
+
+class CNN2(nn.Module):
+    def __init__(self):
+        num_features, size1, size2, size3, size4 = _in_, 64, 32, 16, _out_
+
+        super().__init__()
+        
+        self.conv1 = nn.Conv1d(1, size1, kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm1d(size1)
+        
+        self.conv2 = nn.Conv1d(size1, size2, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm1d(size2)
+        
+        self.pool = nn.MaxPool1d(kernel_size=2)
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten(1)
+        self.softmax = nn.Softmax()
+        
+        final_lenght = num_features // 4 # 2 pooling and conv kernel_size=3
+        
+        self.fc1 = nn.Linear(size2 * final_lenght, size3)
+        self.fc2 = nn.Linear(size3, size4)
+        
+    def forward(self, X):
+        
+        X = X.unsqueeze(1)
+        X = self.pool(self.relu(self.bn1(self.conv1(X))))
+        X = self.pool(self.relu(self.bn2(self.conv2(X))))
+        
+        X = self.flatten(X)
+        X = self.relu(self.fc1(X))
+        X = self.fc2(X)
+        return self.softmax(X)
+    
+###############################################################################################################
+
+class CNN3(nn.Module):
+    def __init__(self):
+        pass
+        
+    def forward(self, X):
+        pass

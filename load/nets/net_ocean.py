@@ -72,6 +72,7 @@ class smallNN(nn.Module):
         out=self.sigmoid4(out)
         out=self.linear5(out)
         return self.softmax(out)
+    
  ###############################################################################################################
 class deeperNN(nn.Module): 
     def __init__(self):        
@@ -125,7 +126,8 @@ class shallowNN(nn.Module):
         out=self.linear3(out)
         return self.softmax(out)
     
-
+###############################################################################################################
+###############################################################################################################
 ###############################################################################################################
 
 class regularizedNN(nn.Module):
@@ -177,12 +179,49 @@ class regularizedNN(nn.Module):
 ###############################################################################################################
 
 class residualNN(nn.Module):
-    def __init__(self):
-        num_features, size1, size2, size3 = _in_, 64, 64, _out_
+    def __init__(self):        
+        num_features, size1, size2, size3, size4, size5 = _in_, 24, 24, 16, 16,  _out_
+        
         super().__init__()
-        pass
+        self.linear1=nn.Linear(in_features=num_features, out_features=size1)
+        self.sigmoid1=nn.Tanh()
+        self.linear2=nn.Linear(in_features=size1, out_features=size2)
+        self.sigmoid2=nn.Tanh()
+        self.linear3=nn.Linear(in_features=size2, out_features=size3)
+        self.sigmoid3 =nn.Tanh()
+        self.linear4=nn.Linear(in_features=size3, out_features=size4)
+        self.sigmoid4 =nn.Tanh()
+        self.linear5=nn.Linear(in_features=size4, out_features=size5)
+        self.softmax = nn.Softmax()
+        
+        self.proj1 = nn.Linear(num_features, size1)
+        self.proj2 = nn.Linear(size1, size2)
+        self.proj3 = nn.Linear(size2, size3)
+        self.proj4 = nn.Linear(size3, size4)
+        
     def forward(self, X):
-        pass
+        identity = self.proj1(X)
+        out = self.linear1(X)
+        out = self.sigmoid1(out)
+        out = out + identity
+        
+        identity = self.proj2(out)
+        out = self.linear2(out)
+        out = self.sigmoid2(out)
+        out = out + identity
+        
+        identity = self.proj3(out)
+        out = self.linear3(out)
+        out = self.sigmoid3(out)
+        out = out + identity
+        
+        identity = self.proj4(out)
+        out = self.linear4(out)
+        out = self.sigmoid4(out)
+        out = out + identity
+        
+        out = self.linear5(out)
+        return self.softmax(out)
 
 
 ###############################################################################################################
@@ -259,7 +298,37 @@ class CNN2(nn.Module):
 
 class CNN3(nn.Module):
     def __init__(self):
-        pass
+        num_features, size1, size2, size3, size4, size5 = _in_, 128, 64, 32, 16, _out_
+
+        super().__init__()
+        
+        self.conv1 = nn.Conv1d(1, size1, kernel_size=3, padding=1)
+        self.bn1 = nn.BatchNorm1d(size1)
+        
+        self.conv2 = nn.Conv1d(size1, size2, kernel_size=3, padding=1)
+        self.bn2 = nn.BatchNorm1d(size2)
+        
+        self.conv3 = nn.Conv1d(size2, size3, kernel_size=3, padding=1)
+        self.bn3 = nn.BatchNorm1d(size3)
+        
+        self.pool = nn.MaxPool1d(kernel_size=2)
+        self.tanh = nn.Tanh()
+        self.flatten = nn.Flatten(1)
+        self.softmax = nn.Softmax()
+        
+        final_lenght = num_features // 4 # 2 pooling and conv kernel_size=3
+        
+        self.fc1 = nn.Linear(size3 * final_lenght, size4)
+        self.fc2 = nn.Linear(size4, size5)
         
     def forward(self, X):
-        pass
+        
+        X = X.unsqueeze(1)
+        X = self.pool(self.tanh(self.bn1(self.conv1(X))))
+        X = self.pool(self.tanh(self.bn2(self.conv2(X))))
+        X = self.tanh(self.bn3(self.conv3(X)))
+        
+        X = self.flatten(X)
+        X = self.tanh(self.fc1(X))
+        X = self.fc2(X)
+        return self.softmax(X)

@@ -175,6 +175,7 @@ cython_debug/
 
 # Other
 .DS_Store
+.idea/
 
 # temporarily remove from the tracking the result folders for size limitations
 results_medoid/

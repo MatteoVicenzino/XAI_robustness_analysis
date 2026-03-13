@@ -180,3 +180,4 @@ cython_debug/
 # temporarily remove from the tracking the result folders for size limitations
 results_medoid/
 results_random/
+note/

@@ -13,6 +13,7 @@ warnings.filterwarnings('ignore')
 
 _in_ = 113
 _out_ = 2
+dropout_rate = 0.1
 
 def training_param(model):
     batch_size = 32
@@ -31,16 +32,12 @@ def recover_net(net_name):
         return deeperNN()
     elif net_name=="shallowNN":
         return shallowNN()
-    elif net_name=="regularizedNN":
-        return regularizedNN()
-    elif net_name=="residualNN":
-        return residualNN()
-    elif net_name=="CNN1":
-        return CNN1()
-    elif net_name=="CNN2":
-        return CNN2()
-    elif net_name=="CNN3":
-        return CNN3()
+    elif net_name=="regSmallNN":
+        return regSmallNN()
+    elif net_name=="regDeeperNN":
+        return regDeeperNN()
+    elif net_name=="regShallowNN":
+        return regShallowNN()
     else:
         raise ValueError(f"There is no object of class {net_name}.")
 
@@ -126,6 +123,114 @@ class shallowNN(nn.Module):
 ###############################################################################################################
 ###############################################################################################################
 
+class regSmallNN(nn.Module):
+    def __init__(self):
+        num_features, size1, size2, size3, size4 = _in_, 264, 64, 32, _out_
+
+        super().__init__()
+        self.linear1 = nn.Linear(in_features=num_features, out_features=size1)
+        self.bn1 = nn.BatchNorm1d(size1)
+        self.sigmoid1 = nn.ReLU()
+        self.linear2 = nn.Linear(in_features=size1, out_features=size2)
+        self.bn2 = nn.BatchNorm1d(size2)
+        self.sigmoid2 = nn.ReLU()
+        self.linear3 = nn.Linear(in_features=size2, out_features=size3)
+        self.bn3 = nn.BatchNorm1d(size3)
+        self.sigmoid3 = nn.ReLU()
+        self.linear4 = nn.Linear(in_features=size3, out_features=size4)
+        self.softmax = nn.Softmax()
+        self.dropout = nn.Dropout(dropout_rate)
+
+    def forward(self, X):
+        out = self.linear1(X)
+        out = self.bn1(out)
+        out = self.sigmoid1(out)
+        out = self.dropout(out)
+        out = self.linear2(out)
+        out = self.bn2(out)
+        out = self.sigmoid2(out)
+        out = self.dropout(out)
+        out = self.linear3(out)
+        out = self.bn3(out)
+        out = self.sigmoid3(out)
+        out = self.dropout(out)
+        out = self.linear4(out)
+        return self.softmax(out)
+
+
+###############################################################################################################
+class regDeeperNN(nn.Module):
+    def __init__(self):
+        num_features, size1, size2, size3, size4, size5 = _in_, 264, 128, 64, 32, _out_
+
+        super().__init__()
+        self.linear1 = nn.Linear(in_features=num_features, out_features=size1)
+        self.bn1 = nn.BatchNorm1d(size1)
+        self.sigmoid1 = nn.ReLU()
+        self.linear2 = nn.Linear(in_features=size1, out_features=size2)
+        self.bn2 = nn.BatchNorm1d(size2)
+        self.sigmoid2 = nn.ReLU()
+        self.linear3 = nn.Linear(in_features=size2, out_features=size3)
+        self.bn3 = nn.BatchNorm1d(size3)
+        self.sigmoid3 = nn.ReLU()
+        self.linear4 = nn.Linear(in_features=size3, out_features=size4)
+        self.bn4 = nn.BatchNorm1d(size4)
+        self.sigmoid4 = nn.ReLU()
+        self.linear5 = nn.Linear(in_features=size4, out_features=size5)
+        self.softmax = nn.Softmax()
+        self.dropout = nn.Dropout(dropout_rate)
+
+    def forward(self, X):
+        out = self.linear1(X)
+        out = self.bn1(out)
+        out = self.sigmoid1(out)
+        out = self.dropout(out)
+        out = self.linear2(out)
+        out = self.bn2(out)
+        out = self.sigmoid2(out)
+        out = self.dropout(out)
+        out = self.linear3(out)
+        out = self.bn3(out)
+        out = self.sigmoid3(out)
+        out = self.dropout(out)
+        out = self.linear4(out)
+        out = self.bn4(out)
+        out = self.sigmoid4(out)
+        out = self.dropout(out)
+        out = self.linear5(out)
+        return self.softmax(out)
+
+
+###############################################################################################################
+class regShallowNN(nn.Module):
+    def __init__(self):
+        num_features, size1, size2, size3 = _in_, 64, 64, _out_
+
+        super().__init__()
+        self.linear1 = nn.Linear(in_features=num_features, out_features=size1)
+        self.bn1 = nn.BatchNorm1d(size1)
+        self.sigmoid1 = nn.ReLU()
+        self.linear2 = nn.Linear(in_features=size1, out_features=size2)
+        self.bn2 = nn.BatchNorm1d(size2)
+        self.sigmoid2 = nn.ReLU()
+        self.linear3 = nn.Linear(in_features=size2, out_features=size3)
+        self.softmax = nn.Softmax()
+        self.dropout = nn.Dropout(dropout_rate)
+
+    def forward(self, X):
+        out = self.linear1(X)
+        out = self.bn1(out)
+        out = self.sigmoid1(out)
+        out = self.dropout(out)
+        out = self.linear2(out)
+        out = self.bn2(out)
+        out = self.sigmoid2(out)
+        out = self.dropout(out)
+        out = self.linear3(out)
+        return self.softmax(out)
+
+# Other previously tested nets
+"""
 class regularizedNN(nn.Module):
     def __init__(self):
         dropout_rate = 0.1
@@ -314,3 +419,4 @@ class CNN3(nn.Module):
         X = self.dropout(X)
         X = self.fc2(X)
         return self.softmax(X)
+"""

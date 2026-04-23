@@ -421,6 +421,7 @@ SUPPORTED_LAYERS_WITH_RULES = {
     nn.AvgPool2d: EpsilonRule,
     nn.AdaptiveAvgPool2d: EpsilonRule,
     nn.Linear: EpsilonRule,
+    nn.BatchNorm1d: EpsilonRule,
     nn.BatchNorm2d: EpsilonRule,
     Addition_Module: EpsilonRule,
 }

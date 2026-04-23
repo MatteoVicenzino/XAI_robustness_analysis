@@ -73,6 +73,7 @@ X_train_or, X_train, y_train = dataset.train()
 X_val_or, X_val, y_val = dataset.validation()
 X_test_or, X_test, y_test = dataset.test()
 model = dataset.load_model(args.model_name)
+model.eval()
 
 if args.type == "validation":
     data = X_val_or
@@ -157,7 +158,7 @@ neigh_size = []
 
 for idx in range(num_points):
     cluster = int(labels[idx])
-    target = int(np.argmax(model(data_tensor[idx, :]).detach().numpy()))
+    target = int(np.argmax(model(data_tensor[idx, :].unsqueeze(0)).detach().numpy()))
 
   
     if args.random:

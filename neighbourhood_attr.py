@@ -2,6 +2,7 @@ import numpy as np
 import scipy
 import sklearn
 import os
+import random
 import argparse
 import joblib
 import torch
@@ -39,6 +40,12 @@ parser.add_argument("--num", type=int, default=100)
 args = parser.parse_args()
 args.seed = np.random.randint(1)
 print(args)
+
+random.seed(args.seed)
+np.random.seed(args.seed)
+torch.manual_seed(args.seed)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(args.seed)
 
 if args.dataset == "":
     raise ValueError("No dataset was specified")
@@ -121,10 +128,10 @@ else:
     print("Computing k-medoids on validation set")
 
     if check_cat:
-        kmedoids, cluster_centers, labels = km.km_manhattan(X_val_or, n_clust= n_clust)
+        kmedoids, cluster_centers, labels = km.km_manhattan(X_val_or, n_clust= n_clust, random_state = args.seed)
         knn_overall = km.knn_overall_manhattan(cluster_centers, n_neigh=args.k)
     else:
-        kmedoids, medoid_indices, cluster_centers, labels = km.km_gower(X_val_or, n_clust = n_clust, bool_vars=bool_vars )
+        kmedoids, medoid_indices, cluster_centers, labels = km.km_gower(X_val_or, n_clust = n_clust, bool_vars=bool_vars, random_state = args.seed)
         knn_overall = km.knn_overall(cluster_centers, medoid_indices, n_neigh=args.k, bool_vars=bool_vars)
 
     print("Saving k-medoids to folder")

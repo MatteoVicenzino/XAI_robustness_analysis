@@ -8,6 +8,7 @@ import torch.nn.functional as f
 
 import joblib
 import os
+import random
 import argparse
 
 import load.load_dataset as ds
@@ -28,6 +29,12 @@ parser.add_argument("--results", type=eval, default=False)
 args = parser.parse_args()
 args.seed = np.random.randint(1)
 print(args)
+
+random.seed(args.seed)
+np.random.seed(args.seed)
+torch.manual_seed(args.seed)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(args.seed)
 
 if args.dataset == "":
     raise ValueError("No dataset was specified")

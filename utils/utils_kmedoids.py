@@ -3,10 +3,10 @@ import gower
 from sklearn.neighbors import NearestNeighbors
 from kmedoids import KMedoids
 
-def km_gower(X, n_clust, bool_vars):
+def km_gower(X, n_clust, bool_vars, random_state=None):
     dist = gower.gower_matrix(X, cat_features = bool_vars)
     
-    kmedoids = KMedoids(n_clusters = n_clust, metric='precomputed')
+    kmedoids = KMedoids(n_clusters = n_clust, metric='precomputed', random_state=random_state)
     kmedoids.fit(dist)
 
     medoid_indices = kmedoids.medoid_indices_
@@ -36,8 +36,8 @@ def km_predict(X, cluster_centers, bool_vars):
 
 ## to deal only with categorical variables (mushroom) we can use the manhattan distance instead
 
-def km_manhattan(X, n_clust):
-    kmedoids = KMedoids(n_clusters = n_clust, init='random', metric = 'manhattan')
+def km_manhattan(X, n_clust, random_state=None):
+    kmedoids = KMedoids(n_clusters = n_clust, init='random', metric = 'manhattan', random_state=random_state)
     kmedoids.fit(X)
     
     cluster_centers = kmedoids.cluster_centers_

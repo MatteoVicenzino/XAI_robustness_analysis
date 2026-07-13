@@ -10,6 +10,7 @@ from captum.attr import IntegratedGradients, DeepLift
 from utils.lrp import LRP
 from utils.lrp import linear_rule, non_linear_support
 from captum.attr._utils.lrp_rules import EpsilonRule, GammaRule, Alpha1_Beta0_Rule
+from utils.fuse_bn import build_lrp_view, has_batchnorm
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -17,10 +18,13 @@ warnings.filterwarnings('ignore')
 def compute_attributions(model, dataset, target, lrp_rule):
     ig = IntegratedGradients(model)
     dl = DeepLift(model)
-    lrp = LRP(model)
+
+    lrp_model = build_lrp_view(model) if has_batchnorm(model) else model
+    lrp = LRP(lrp_model)
 
     _ = linear_rule(lrp_rule)
     _ = non_linear_support(nn.Softmax)
+    _ = non_linear_support(nn.Identity)
 
     dataset.requires_grad_()
 
@@ -33,7 +37,7 @@ def compute_attributions(model, dataset, target, lrp_rule):
         tmp = tmp.detach().numpy()
 
         if i ==(len(METHODS)-1): #for lrp
-            output_score = model(dataset).detach().numpy()[:, target]
+            output_score = lrp_model(dataset).detach().numpy()[:, target]
             tmp = tmp* output_score[:,np.newaxis]
 
         attr[:, :, i] = tmp

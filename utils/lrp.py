@@ -426,7 +426,7 @@ SUPPORTED_LAYERS_WITH_RULES = {
     Addition_Module: EpsilonRule,
 }
 
-SUPPORTED_NON_LINEAR_LAYERS = [nn.ReLU, nn.Dropout, nn.Tanh]
+SUPPORTED_NON_LINEAR_LAYERS = [nn.ReLU, nn.Dropout, nn.Tanh, nn.Identity]
 
 def linear_rule(rule=EpsilonRule):
     SUPPORTED_LAYERS_WITH_RULES[nn.Linear] = rule

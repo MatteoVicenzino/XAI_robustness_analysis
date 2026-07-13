@@ -6,8 +6,8 @@ source "$VENV_PATH/bin/activate"
 # train all models
 # Not parallelized yet!! Around 6h run!!!
 # run from XAI_robustness_analysis
-# chmod +x ./scripts/pipeline_model.sh
-# ./scripts/pipeline_model.sh
+# chmod +x ./scripts/train_all.sh
+# ./scripts/train_all.sh
 
 # ADULT
 python3 new_net_training.py --dataset adult --model_type smallNN --model_name model1 --new False --validation True --history True --results True

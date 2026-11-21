@@ -12,7 +12,7 @@ warnings.filterwarnings('ignore')
 
 _in_ = 7
 _out_ = 7
-dropout_rate = 0.05
+dropout_rate = 0.5
 
 def training_param(model):
     batch_size = 32

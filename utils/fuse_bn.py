@@ -10,8 +10,7 @@ def fuse_linear_bn(linear: nn.Linear, bn: nn.BatchNorm1d) -> nn.Linear:
     fused = nn.Linear(linear.in_features, linear.out_features, bias=True)
 
     w = linear.weight.detach().clone()
-    b = linear.bias.detach().clone() if linear.bias is not None \
-        else torch.zeros(linear.out_features)
+    b = linear.bias.detach().clone() if linear.bias is not None else torch.zeros(linear.out_features)
 
     gamma = bn.weight.detach().clone()
     beta = bn.bias.detach().clone()

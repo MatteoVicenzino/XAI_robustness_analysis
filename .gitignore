@@ -181,3 +181,4 @@ cython_debug/
 results_medoid/
 results_random/
 note/
+dataset/_raw

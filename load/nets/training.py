@@ -33,8 +33,8 @@ class AverageMeter(object):
         self.avg = self.sum/self.count
 
 def accuracy(y_hat, y):
-    classes_prediction = np.argmax(y_hat.detach().numpy(), axis=1)
-    ground_truth = np.argmax(y.detach().numpy(), axis=1)
+    classes_prediction = np.argmax(y_hat.detach().cpu().numpy(), axis=1)
+    ground_truth = np.argmax(y.detach().cpu().numpy(), axis=1)
     return np.mean(classes_prediction == ground_truth)
 
 
@@ -114,15 +114,16 @@ def train_net(model, model_name, X_train, y_train, training_param, dataset_name,
     print("Model saved")
     return model
 
+def predict(model, X, batch_size=1000):
+    device = next(model.parameters()).device
+    with torch.no_grad():
+        return torch.cat([model(X[i:i+batch_size].to(device)).cpu() for i in range(0, len(X), batch_size)])
 
 def validate_epoch(model, X_val, y_val,  loss_fn, device):
     model.eval()
     
     with torch.no_grad():
-        X_val = X_val.to(device)
-        y_val = y_val.to(device)
-        
-        y_hat = model(X_val)
+        y_hat = predict(model, X_val)
         val_loss = loss_fn(y_hat, y_val).item()
         val_acc = accuracy(y_hat, y_val)
         
@@ -134,14 +135,15 @@ def evaluation(model, X_train, X_test, y_train, y_test, results_path = None, typ
     model.eval()
 
     results = {'pred_proba': [], 'classification_report': [], 'confusion_matrix': []}
-    
-    class_train_hat = np.argmax(model(X_train).detach().numpy(), axis=1)
+
+    class_train_hat = np.argmax(predict(model, X_train).numpy(), axis=1)
     class_train_true = np.argmax(y_train.detach().numpy(), axis=1)
 
-    class_test_hat = np.argmax(model(X_test).detach().numpy(), axis=1)
+    test_out = predict(model, X_test)
+    class_test_hat = np.argmax(test_out.numpy(), axis=1)
     class_test_true = np.argmax(y_test.detach().numpy(), axis=1)
     
-    test_prob = torch.softmax(model(X_test), dim=1).detach().numpy()
+    test_prob = torch.softmax(test_out, dim=1).numpy()
     
     results['pred_proba'].append(test_prob)
     results['classification_report'].append(classification_report(class_test_true, class_test_hat))

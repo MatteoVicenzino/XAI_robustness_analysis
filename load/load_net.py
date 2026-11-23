@@ -17,6 +17,10 @@ def load_net(dataset_name):
         import load.nets.net_ocean as net
     elif dataset_name == "wine":
         import load.nets.net_wine as net
+    elif dataset_name == "mnist":
+        import load.nets.net_mnist as net
+    elif dataset_name == "cifar10":
+        import load.nets.net_cifar10 as net
     else:
         raise ValueError("There is no dataset with this name.")
     

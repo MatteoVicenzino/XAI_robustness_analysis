@@ -182,3 +182,6 @@ results_medoid/
 results_random/
 note/
 dataset/_raw
+/datasets/mnist/Xtrain.pt
+/datasets/mnist/Xtrain_or.npy
+/datasets/mnist/Xval.pt

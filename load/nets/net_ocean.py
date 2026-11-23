@@ -17,8 +17,8 @@ dropout_rate = 0.2
 
 def training_param(model):
     batch_size = 32
-    num_epochs = 150
-    learning_rate = 0.0005
+    num_epochs = 200 # 150
+    learning_rate = 0.005 # 0.0005
     optimizer = optim.RAdam(model.parameters(), lr=learning_rate)
     loss_fn = nn.CrossEntropyLoss()
  

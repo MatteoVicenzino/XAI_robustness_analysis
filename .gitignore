@@ -185,3 +185,7 @@ dataset/_raw
 /datasets/mnist/Xtrain.pt
 /datasets/mnist/Xtrain_or.npy
 /datasets/mnist/Xval.pt
+/datasets/cifar10/Xtrain.pt
+/datasets/cifar10/Xtrain_or.npy
+/datasets/cifar10/Xval.pt
+/datasets/cifar10/Xval_or.npy

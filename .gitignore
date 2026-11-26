@@ -189,3 +189,4 @@ dataset/_raw
 /datasets/cifar10/Xtrain_or.npy
 /datasets/cifar10/Xval.pt
 /datasets/cifar10/Xval_or.npy
+/neigh_hyper_tuning.ipynb

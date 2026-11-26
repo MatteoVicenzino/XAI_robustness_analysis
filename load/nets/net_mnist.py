@@ -88,6 +88,7 @@ class CNN1do(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, X):
+        X = X.reshape(-1, _in_, 28, 28)
         out = self.conv1(X)
         out = self.relu1(out)
         out = self.conv2(out)
@@ -126,6 +127,7 @@ class CNN1bn(nn.Module):
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, X):
+        X = X.reshape(-1, _in_, 28, 28)
         out = self.conv1(X)
         out = self.bn1(out)
         out = self.relu1(out)
